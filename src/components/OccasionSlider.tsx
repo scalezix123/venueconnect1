@@ -30,9 +30,9 @@ const OccasionSlider = () => {
 
   return (
     <section className="bg-white py-20" style={{ minHeight: '650px', display: 'flex', alignItems: 'center' }}>
-      <div className="container w-full">
+      <div className="w-full px-4">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 max-w-4xl mx-auto">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-12 bg-primary/30" />
             <span className="text-[10.5px] font-semibold tracking-[3px] uppercase text-primary">
@@ -51,7 +51,7 @@ const OccasionSlider = () => {
         </div>
 
         {/* Slider Container */}
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-7xl mx-auto">
           {/* Left Arrow */}
           <button
             onClick={() => scroll('left')}
@@ -78,7 +78,7 @@ const OccasionSlider = () => {
               <div
                 key={index}
                 onClick={() => setSelectedIndex(index)}
-                className={`flex-shrink-0 w-[150px] group cursor-pointer transition-all duration-300 ${
+                className={`flex-shrink-0 w-[160px] group cursor-pointer transition-all duration-300 ${
                   selectedIndex === index ? 'scale-105' : ''
                 }`}
               >
