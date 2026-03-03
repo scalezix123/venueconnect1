@@ -3,51 +3,51 @@ import { motion } from "framer-motion";
 import { MapPin, ArrowRight } from "lucide-react";
 
 const cities = [
-  { 
-    name: "Ahmedabad", 
-    venues: 250, 
+  {
+    name: "Ahmedabad",
+    venues: 250,
     slug: "ahmedabad",
     image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80"
   },
-  { 
-    name: "Surat", 
-    venues: 180, 
+  {
+    name: "Surat",
+    venues: 180,
     slug: "surat",
     image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80"
   },
-  { 
-    name: "Vadodara", 
-    venues: 150, 
+  {
+    name: "Vadodara",
+    venues: 150,
     slug: "vadodara",
     image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80"
   },
-  { 
-    name: "Rajkot", 
-    venues: 120, 
+  {
+    name: "Rajkot",
+    venues: 120,
     slug: "rajkot",
     image: "https://images.unsplash.com/photo-1624454002302-36b824d7bd0a?w=600&q=80"
   },
-  { 
-    name: "Gandhinagar", 
-    venues: 80, 
+  {
+    name: "Gandhinagar",
+    venues: 80,
     slug: "gandhinagar",
     image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&q=80"
   },
-  { 
-    name: "Bhavnagar", 
-    venues: 60, 
+  {
+    name: "Bhavnagar",
+    venues: 60,
     slug: "bhavnagar",
     image: "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=600&q=80"
   },
-  { 
-    name: "Jamnagar", 
-    venues: 55, 
+  {
+    name: "Jamnagar",
+    venues: 55,
     slug: "jamnagar",
     image: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=600&q=80"
   },
-  { 
-    name: "Anand", 
-    venues: 45, 
+  {
+    name: "Anand",
+    venues: 45,
     slug: "anand",
     image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80"
   },
@@ -70,11 +70,11 @@ const PopularCities = () => {
             </span>
             <div className="h-px w-12 bg-primary/30" />
           </div>
-          
+
           <h2 className="font-display text-4xl md:text-5xl font-semibold text-foreground mb-4">
             Popular Cities in <span className="text-primary">Gujarat</span>
           </h2>
-          
+
           <p className="text-base text-muted-foreground max-w-2xl mx-auto">
             Discover venues in top Gujarat cities
           </p>
@@ -94,15 +94,15 @@ const PopularCities = () => {
                 className="group block relative rounded-2xl overflow-hidden h-64 shadow-lg hover:shadow-2xl transition-all duration-300"
               >
                 {/* City Image */}
-                <img 
-                  src={city.image} 
+                <img
+                  src={city.image}
                   alt={city.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                
+
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                
+
                 {/* Content */}
                 <div className="absolute inset-0 flex flex-col justify-end p-6">
                   <div className="flex items-center gap-2 mb-2">
@@ -114,7 +114,7 @@ const PopularCities = () => {
                   <p className="text-white/80 text-sm mb-3">
                     {city.venues}+ Venues
                   </p>
-                  
+
                   <div className="flex items-center gap-2 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                     <span>Explore Venues</span>
                     <ArrowRight className="w-4 h-4" />

@@ -40,11 +40,11 @@ const OccasionSlider = () => {
             </span>
             <div className="h-px w-12 bg-primary/30" />
           </div>
-          
+
           <h2 className="font-display text-5xl md:text-6xl font-semibold text-foreground mb-4">
             What's the <span className="text-primary">Occasion?</span>
           </h2>
-          
+
           <p className="text-base text-muted-foreground max-w-2xl mx-auto">
             Discover the perfect venue for every celebration across Gujarat
           </p>
@@ -71,31 +71,28 @@ const OccasionSlider = () => {
           {/* Scrollable Cards */}
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-smooth pb-4 px-2"
+            className="flex gap-5 overflow-x-auto scrollbar-hide scroll-smooth py-8 px-4"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {occasions.map((occasion, index) => (
               <div
                 key={index}
                 onClick={() => setSelectedIndex(index)}
-                className={`flex-shrink-0 w-[160px] group cursor-pointer transition-all duration-300 ${
-                  selectedIndex === index ? 'scale-105' : ''
-                }`}
+                className={`flex-shrink-0 w-[160px] group cursor-pointer transition-all duration-300 ${selectedIndex === index ? 'scale-105' : ''
+                  }`}
               >
-                <div className={`bg-white rounded-2xl p-6 transition-all duration-300 h-[180px] flex flex-col items-center justify-center ${
-                  selectedIndex === index 
-                    ? 'border-2 border-primary shadow-xl' 
+                <div className={`bg-white rounded-2xl p-6 transition-all duration-300 h-[180px] flex flex-col items-center justify-center ${selectedIndex === index
+                    ? 'border-2 border-primary shadow-xl'
                     : 'border-2 border-border hover:border-primary/50 hover:shadow-md'
-                }`}>
+                  }`}>
                   {/* Icon */}
                   <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {occasion.icon}
                   </div>
-                  
+
                   {/* Name */}
-                  <div className={`text-base font-semibold text-center transition-colors ${
-                    selectedIndex === index ? 'text-primary' : 'text-foreground group-hover:text-primary'
-                  }`}>
+                  <div className={`text-base font-semibold text-center transition-colors ${selectedIndex === index ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                    }`}>
                     {occasion.name}
                   </div>
                 </div>

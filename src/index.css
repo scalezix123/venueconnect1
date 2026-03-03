@@ -94,11 +94,18 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Jost', system-ui, sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Cormorant Garamond', serif;
   }
 }
@@ -107,26 +114,32 @@
   .gradient-primary {
     background: var(--hero-gradient);
   }
+
   .shadow-card {
     box-shadow: var(--card-shadow);
   }
+
   .shadow-card-hover {
     box-shadow: var(--card-shadow-hover);
   }
+
   .glass {
     background: var(--glass);
     backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
   }
+
   .text-gradient {
     background: var(--hero-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
   .font-display {
     font-family: 'Cormorant Garamond', serif;
   }
+
   .font-sans {
     font-family: 'Jost', system-ui, sans-serif;
   }

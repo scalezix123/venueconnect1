@@ -11,8 +11,14 @@ const benefits = [
 
 const VenueOwnerCTA = () => {
   return (
-    <section className="py-20 bg-foreground">
-      <div className="container">
+    <section className="py-24 relative overflow-hidden bg-[#12080E]">
+      {/* Background accents */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[100px]" />
+      </div>
+
+      <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -20,40 +26,44 @@ const VenueOwnerCTA = () => {
           className="grid md:grid-cols-2 gap-12 items-center"
         >
           <div>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-semibold mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] tracking-[3px] uppercase font-semibold mb-6">
               For Venue Owners
             </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-background mb-6">
-              List Your Venue <span className="text-gradient">FREE</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-white mb-6 leading-[1.1]">
+              List Your Venue <br className="hidden md:block" />
+              <span className="italic text-primary font-light">for Free</span>
             </h2>
-            <div className="space-y-4 mb-8">
+            <div className="space-y-5 mb-10">
               {benefits.map((b) => (
-                <div key={b} className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-venue-green flex-shrink-0" />
-                  <span className="text-background/80">{b}</span>
+                <div key={b} className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <CheckCircle className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <span className="text-white/70 font-light text-base">{b}</span>
                 </div>
               ))}
             </div>
-            <Button size="lg" className="gradient-primary text-primary-foreground border-0 hover:opacity-90 text-base px-8">
-              List Your Venue <ArrowRight className="w-4 h-4 ml-2" />
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 text-xs font-semibold tracking-[2px] uppercase px-8 h-14 shadow-lg hover:shadow-primary/25 transition-all">
+              List Your Venue <ArrowRight className="w-4 h-4 ml-3" />
             </Button>
           </div>
 
-          <div className="relative">
-            <div className="rounded-2xl overflow-hidden">
+          <div className="relative mt-8 md:mt-0">
+            <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#12080E]/80 to-transparent z-10 pointer-events-none" />
               <img
-                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80"
+                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80"
                 alt="Venue owner managing bookings"
-                className="w-full h-80 object-cover rounded-2xl"
+                className="w-full h-96 md:h-[500px] object-cover"
               />
             </div>
-            <div className="absolute -bottom-4 -left-4 bg-card rounded-xl p-4 shadow-card-hover">
-              <div className="text-2xl font-display font-bold text-primary">500+</div>
-              <div className="text-sm text-muted-foreground">Venues listed</div>
+            <div className="absolute -bottom-6 -left-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl z-20">
+              <div className="text-4xl font-display font-semibold text-white mb-1 drop-shadow-md">500+</div>
+              <div className="text-[10px] tracking-[2px] font-semibold uppercase text-white/60">Venues listed</div>
             </div>
-            <div className="absolute -top-4 -right-4 bg-card rounded-xl p-4 shadow-card-hover">
-              <div className="text-2xl font-display font-bold text-venue-green">10K+</div>
-              <div className="text-sm text-muted-foreground">Leads generated</div>
+            <div className="absolute -top-6 -right-6 bg-primary/10 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 shadow-2xl z-20">
+              <div className="text-4xl font-display font-semibold text-primary mb-1 drop-shadow-md">10K+</div>
+              <div className="text-[10px] tracking-[2px] font-semibold uppercase text-primary/60">Leads generated</div>
             </div>
           </div>
         </motion.div>

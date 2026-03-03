@@ -4,12 +4,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const HeroSearch = () => {
   return (
-    <section className="relative h-screen min-h-[700px] flex flex-col justify-end overflow-hidden">
+    <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80" 
-          alt="Luxury wedding venue"
+        <img
+          src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80"
+          alt="Luxury Event Venue"
           className="w-full h-full object-cover animate-[zoomOut_12s_ease_forwards]"
         />
       </div>
@@ -18,7 +18,7 @@ const HeroSearch = () => {
       <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[rgba(18,8,14,0.95)] via-[rgba(18,8,14,0.55)] to-[rgba(18,8,14,0.15)]" />
 
       {/* Content */}
-      <div className="relative z-[2] container pb-20 pt-32">
+      <div className="relative z-[2] container pb-20 pt-40">
         <div className="max-w-4xl mx-auto text-center">
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-3 mb-6">
@@ -28,25 +28,25 @@ const HeroSearch = () => {
             </span>
             <div className="h-px w-6 bg-white/30" />
           </div>
-          
+
           {/* Headline */}
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-semibold leading-[1.05] text-white mb-7">
             Where Every<br />
-            <em className="italic text-[#e8a0c0]">Celebration</em><br />
+            <em className="italic text-primary drop-shadow-[0_2px_10px_rgba(255,255,255,0.7)] bg-white/10 px-4 rounded-full">Celebration</em><br />
             Begins
           </h1>
-          
+
           {/* Subheading */}
           <p className="text-[15px] font-light text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto">
             Discover and book extraordinary venues across India — from grand palace weddings to intimate rooftop gatherings. Curated, verified, and exceptional.
           </p>
-          
+
           {/* Search Box */}
-          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 max-w-3xl mx-auto mb-8">
-            <h3 className="font-display text-xl text-white font-medium mb-4 text-center">
+          <div className="bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-8 max-w-3xl mx-auto mb-12 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            <h3 className="font-display text-2xl text-white font-medium mb-6 text-center tracking-wide drop-shadow-md">
               Find Your Perfect Venue
             </h3>
-            
+
             <div className="grid md:grid-cols-[1fr_1fr_auto] gap-3">
               <div>
                 <label className="text-[9px] font-semibold tracking-[2px] uppercase text-white/40 mb-2 block">
@@ -88,7 +88,7 @@ const HeroSearch = () => {
               </div>
 
               <div className="flex items-end">
-                <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white h-12 px-8 text-[11px] font-semibold tracking-[2px] uppercase">
+                <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 text-[11px] font-semibold tracking-[2px] uppercase shadow-lg transition-all hover:scale-105 duration-300">
                   <Search className="w-4 h-4 mr-2" />
                   Search
                 </Button>
@@ -114,7 +114,7 @@ const HeroSearch = () => {
 
           {/* CTA Buttons */}
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" variant="outline" className="border-white/45 text-white hover:bg-white/12 hover:border-white px-8 py-6 text-xs font-semibold tracking-wider uppercase">
+            <Button size="lg" className="bg-white/10 backdrop-blur-sm border border-white/45 text-white hover:bg-white/20 hover:border-white px-8 py-6 text-xs font-semibold tracking-wider uppercase">
               List Your Venue
             </Button>
           </div>
