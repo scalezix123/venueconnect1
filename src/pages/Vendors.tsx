@@ -78,14 +78,33 @@ const DUMMY_VENDORS: VendorData[] = [
 
 const Vendors = () => {
     const [searchParams] = useSearchParams();
-    const cityFilter = searchParams.get("city")?.toLowerCase();
+    const searchCity = searchParams.get("city")?.toLowerCase();
     const categoryFilter = searchParams.get("category")?.toLowerCase();
+    const filterTypes = searchParams.getAll("type");
+    const filterPrices = searchParams.getAll("price");
 
     const filteredVendors = DUMMY_VENDORS.filter(vendor => {
         let match = true;
-        if (cityFilter && vendor.city.toLowerCase() !== cityFilter) match = false;
-        // Basic match for wedding since it's a broad term
+
+        if (searchCity && vendor.city.toLowerCase() !== searchCity) match = false;
+
         if (categoryFilter && categoryFilter !== 'wedding' && !vendor.category.toLowerCase().includes(categoryFilter)) match = false;
+
+        if (filterTypes.length > 0) {
+            if (!filterTypes.includes(vendor.category)) match = false;
+        }
+
+        if (filterPrices.length > 0) {
+            let priceMatch = false;
+            for (const p of filterPrices) {
+                if (p === 'Under ₹20,000' && vendor.startingPrice < 20000) priceMatch = true;
+                if (p === '₹20k - ₹50k' && vendor.startingPrice >= 20000 && vendor.startingPrice <= 50000) priceMatch = true;
+                if (p === '₹50k - ₹1L' && vendor.startingPrice >= 50000 && vendor.startingPrice <= 100000) priceMatch = true;
+                if (p === 'Above ₹1L' && vendor.startingPrice > 100000) priceMatch = true;
+            }
+            if (!priceMatch) match = false;
+        }
+
         return match;
     });
 
@@ -109,7 +128,7 @@ const Vendors = () => {
                         <div className="flex-grow">
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-2xl font-semibold text-foreground font-display">
-                                    {filteredVendors.length} Professionals Found
+                                    {filteredVendors.length} Professionals Found {searchCity && `in ${searchParams.get("city")}`}
                                 </h2>
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm text-muted-foreground hidden sm:inline-block">Sort by:</span>

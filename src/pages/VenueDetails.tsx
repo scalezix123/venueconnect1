@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { Star, MapPin, CheckCircle2, ChevronLeft, Phone, Mail, Globe, Share2, Heart, Users, Calendar, Clock, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GetQuoteModal from "@/components/GetQuoteModal";
+import ReviewsList from "@/components/ReviewsList";
 
 const VENUE_DB: Record<string, any> = {
     "v1": {
@@ -118,6 +119,9 @@ const VenueDetails = () => {
                                     ))}
                                 </div>
                             </section>
+
+                            {/* Reviews Section */}
+                            <ReviewsList venueId={venue.id || id || "v1"} />
 
                         </div>
 

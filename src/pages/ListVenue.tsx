@@ -3,8 +3,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Building2, MapPin, Camera, Info } from "lucide-react";
+import { ArrowRight, CheckCircle2, Building2, MapPin, Camera, Info, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const ListVenue = () => {
     const [step, setStep] = useState(1);
@@ -18,21 +19,86 @@ const ListVenue = () => {
         email: "",
         description: "",
     });
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const removeImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+    };
+
     const nextStep = () => setStep((s) => Math.min(s + 1, 3));
     const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate API call
-        setTimeout(() => {
-            toast.success("Details submitted successfully! Our team will contact you soon.");
+        setIsSubmitting(true);
+
+        try {
+            let imageUrl = null;
+
+            if (imageFile) {
+                const fileExt = imageFile.name.split('.').pop();
+                const fileName = `${Math.random()}.${fileExt}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('venue_applications_images')
+                    .upload(fileName, imageFile);
+
+                if (uploadError) {
+                    throw new Error(`Image upload failed: ${uploadError.message}`);
+                }
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('venue_applications_images')
+                    .getPublicUrl(fileName);
+
+                imageUrl = publicUrl;
+            }
+
+            const { error } = await supabase.from('venue_applications').insert([
+                {
+                    business_name: formData.businessName,
+                    venue_type: formData.category,
+                    city: formData.city,
+                    address: formData.address,
+                    contact_person: formData.contactName,
+                    business_phone: formData.phone,
+                    business_email: formData.email,
+                    description: formData.description,
+                    capacity: 0, // Default placeholders as forms don't have this yet
+                    image_url: imageUrl
+                }
+            ]);
+
+            if (error) throw error;
+
+            toast.success("Application submitted successfully!", {
+                description: "Our team will contact you soon."
+            });
             setStep(4); // Success step
-        }, 1000);
+
+        } catch (error: any) {
+            toast.error("Failed to submit application", {
+                description: error.message
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const StepProgress = () => (
@@ -230,6 +296,40 @@ const ListVenue = () => {
                                             </div>
                                         </div>
 
+                                        <div className="space-y-4">
+                                            <label className="text-sm font-medium">Cover Image</label>
+
+                                            {imagePreview ? (
+                                                <div className="relative rounded-lg overflow-hidden border border-border bg-muted/30 w-full h-48 md:w-64">
+                                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={removeImage}
+                                                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:bg-muted/10 transition-colors">
+                                                    <UploadCloud className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+                                                    <p className="text-sm font-medium mb-1">Upload a cover image</p>
+                                                    <p className="text-xs text-muted-foreground mb-4">PNG, JPG, up to 5MB</p>
+                                                    <div className="relative">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            onChange={handleImageChange}
+                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                        />
+                                                        <Button type="button" variant="outline" className="pointer-events-none">
+                                                            Browse Files
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
                                         <div className="pt-6 border-t border-border mt-8 flex justify-between">
                                             <Button type="button" variant="outline" onClick={prevStep}>
                                                 Back
@@ -296,11 +396,11 @@ const ListVenue = () => {
                                         </div>
 
                                         <div className="pt-6 border-t border-border mt-8 flex justify-between">
-                                            <Button type="button" variant="outline" onClick={prevStep}>
+                                            <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}>
                                                 Edit Details
                                             </Button>
-                                            <Button type="submit" className="bg-primary hover:bg-primary/90 text-white min-w-[150px] shadow-md">
-                                                Submit Application
+                                            <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-white min-w-[150px] shadow-md">
+                                                {isSubmitting ? "Submitting..." : "Submit Application"}
                                             </Button>
                                         </div>
                                     </div>

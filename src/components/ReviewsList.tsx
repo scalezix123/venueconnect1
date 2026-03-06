@@ -1,0 +1,221 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Star, User, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+
+interface Review {
+    id: string;
+    created_at: string;
+    user_name: string;
+    rating: number;
+    comment: string;
+    user_id: string;
+}
+
+interface ReviewsListProps {
+    venueId: string;
+}
+
+const ReviewsList = ({ venueId }: ReviewsListProps) => {
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState<any>(null);
+
+    // Form state
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => {
+        checkUser();
+        fetchReviews();
+    }, [venueId]);
+
+    const checkUser = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            // Also fetch user profile info for name if needed
+            setCurrentUser(user);
+        }
+    };
+
+    const fetchReviews = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('venue_reviews')
+                .select('*')
+                .eq('venue_id', venueId)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setReviews(data || []);
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentUser) {
+            toast.error("Please login to leave a review");
+            return;
+        }
+
+        if (!comment.trim()) {
+            toast.error("Please enter a comment");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const userName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || "Guest";
+
+            const { error } = await supabase.from('venue_reviews').insert([
+                {
+                    venue_id: venueId,
+                    user_id: currentUser.id,
+                    user_name: userName,
+                    rating,
+                    comment
+                }
+            ]);
+
+            if (error) throw error;
+
+            toast.success("Review posted successfully!");
+            setComment("");
+            setRating(5);
+            fetchReviews(); // Refresh the list
+        } catch (error: any) {
+            toast.error("Failed to post review", {
+                description: error.message
+            });
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const averageRating = reviews.length > 0
+        ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
+        : "0.0";
+
+    return (
+        <div className="mt-12 pt-8 border-t border-border">
+            <h2 className="text-2xl font-semibold font-display mb-8">Ratings & Reviews</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Summary & Form Column */}
+                <div className="md:col-span-1 space-y-6">
+                    <div className="bg-muted/30 p-6 rounded-xl border border-border/50 text-center">
+                        <div className="text-5xl font-display font-bold text-foreground mb-2">{averageRating}</div>
+                        <div className="flex justify-center gap-1 mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                    key={star}
+                                    className={`w-5 h-5 ${star <= parseFloat(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`}
+                                />
+                            ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground">Based on {reviews.length} reviews</p>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
+                        <h3 className="font-semibold mb-4">Write a Review</h3>
+                        {currentUser ? (
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="text-sm font-medium mb-1 block">Your Rating</label>
+                                    <div className="flex gap-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button
+                                                key={star}
+                                                type="button"
+                                                onClick={() => setRating(star)}
+                                                className="focus:outline-none"
+                                            >
+                                                <Star
+                                                    className={`w-6 h-6 transition-colors ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted hover:text-yellow-200'}`}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-medium mb-1 block">Your Experience</label>
+                                    <Textarea
+                                        placeholder="Tell others what you thought about this venue..."
+                                        className="min-h-[100px] resize-none"
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <Button type="submit" className="w-full" disabled={submitting}>
+                                    {submitting ? "Posting..." : "Post Review"}
+                                </Button>
+                            </form>
+                        ) : (
+                            <div className="text-center py-6">
+                                <MessageCircle className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                                <p className="text-sm text-muted-foreground mb-4">Please log in to share your experience and write a review.</p>
+                                <Button className="w-full" variant="outline" onClick={() => window.location.href = '/login'}>
+                                    Login to Review
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Reviews List Column */}
+                <div className="md:col-span-2 space-y-4">
+                    {loading ? (
+                        <div className="flex justify-center py-10">
+                            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : reviews.length > 0 ? (
+                        <div className="space-y-4">
+                            {reviews.map((review) => (
+                                <div key={review.id} className="bg-white p-5 rounded-xl border border-border flex gap-4">
+                                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center shrink-0 font-bold">
+                                        {review.user_name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="flex-grow">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h4 className="font-medium text-foreground">{review.user_name}</h4>
+                                            <span className="text-xs text-muted-foreground">
+                                                {new Date(review.created_at).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                        <div className="flex gap-1 mb-2">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <Star
+                                                    key={star}
+                                                    className={`w-3.5 h-3.5 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                            {review.comment}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="bg-muted/10 border border-dashed border-border rounded-xl p-10 text-center flex flex-col items-center justify-center h-full min-h-[300px]">
+                            <Star className="w-12 h-12 text-muted-foreground mb-4 opacity-30" />
+                            <h3 className="text-lg font-medium text-foreground mb-1">No reviews yet</h3>
+                            <p className="text-sm text-muted-foreground">Be the first to share your experience at this venue!</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ReviewsList;

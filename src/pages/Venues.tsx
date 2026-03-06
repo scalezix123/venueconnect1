@@ -17,6 +17,8 @@ const DUMMY_VENUES: VenueData[] = [
         image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
         featured: true,
         verified: true,
+        venueType: "Banquet Hall",
+        pricePerPlate: 1200
     },
     {
         id: "v2",
@@ -28,6 +30,8 @@ const DUMMY_VENUES: VenueData[] = [
         reviews: 189,
         image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80",
         verified: true,
+        venueType: "Farmhouse",
+        pricePerPlate: 850
     },
     {
         id: "v3",
@@ -40,6 +44,8 @@ const DUMMY_VENUES: VenueData[] = [
         image: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80",
         featured: true,
         verified: true,
+        venueType: "Banquet Hall",
+        pricePerPlate: 1500
     },
     {
         id: "v4",
@@ -51,6 +57,8 @@ const DUMMY_VENUES: VenueData[] = [
         reviews: 156,
         image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80",
         verified: true,
+        venueType: "Resort",
+        pricePerPlate: 1100
     },
     {
         id: "v5",
@@ -61,6 +69,8 @@ const DUMMY_VENUES: VenueData[] = [
         rating: 4.4,
         reviews: 98,
         image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
+        venueType: "Hotel",
+        pricePerPlate: 950
     },
     {
         id: "v6",
@@ -73,16 +83,36 @@ const DUMMY_VENUES: VenueData[] = [
         image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80",
         featured: true,
         verified: true,
+        venueType: "Resort",
+        pricePerPlate: 2000
     }
 ];
 
 const Venues = () => {
     const [searchParams] = useSearchParams();
-    const cityFilter = searchParams.get("city")?.toLowerCase();
+    const searchCity = searchParams.get("city")?.toLowerCase();
+    const searchCategory = searchParams.get("category")?.toLowerCase(); // from HeroSearch, usually empty for venues but passed
+    const filterTypes = searchParams.getAll("type"); // e.g., Hotel, Resort
+    const filterCapacity = searchParams.get("capacity");
 
     const filteredVenues = DUMMY_VENUES.filter(venue => {
-        if (!cityFilter) return true;
-        return venue.city.toLowerCase() === cityFilter;
+        let match = true;
+
+        if (searchCity && venue.city.toLowerCase() !== searchCity) match = false;
+
+        if (filterTypes.length > 0 && venue.venueType) {
+            if (!filterTypes.includes(venue.venueType)) match = false;
+        }
+
+        if (filterCapacity) {
+            const maxCap = parseInt(venue.capacity.split('-')[1] || venue.capacity.replace('+', ''));
+            if (filterCapacity === "Under 100" && maxCap >= 100) match = false;
+            if (filterCapacity === "100 - 500" && (maxCap < 100 || maxCap > 500)) match = false;
+            if (filterCapacity === "500 - 1000" && (maxCap < 500 || maxCap > 1000)) match = false;
+            if (filterCapacity === "1000+" && maxCap < 1000) match = false;
+        }
+
+        return match;
     });
 
     return (
@@ -105,7 +135,7 @@ const Venues = () => {
                         <div className="flex-grow">
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-2xl font-semibold text-foreground font-display">
-                                    {filteredVenues.length} Venues Found {cityFilter && `in ${searchParams.get("city")}`}
+                                    {filteredVenues.length} Venues Found {searchCity && `in ${searchParams.get("city")}`}
                                 </h2>
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm text-muted-foreground hidden sm:inline-block">Sort by:</span>

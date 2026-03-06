@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User, Phone, Calendar, Users, MessageSquare, IndianRupee } from "lucide-react";
+import { User, Phone, Calendar, Users, MessageSquare, IndianRupee, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GetQuoteModalProps {
     businessName: string;
@@ -13,18 +14,52 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // Form state
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [eventDate, setEventDate] = useState("");
+    const [guests, setGuests] = useState("");
+    const [requirements, setRequirements] = useState("");
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-            setOpen(false);
+        try {
+            const { error } = await supabase.from('venue_leads').insert([
+                {
+                    venue_name: businessName,
+                    name,
+                    email,
+                    phone,
+                    event_date: eventDate,
+                    guest_count: parseInt(guests),
+                    requirements
+                }
+            ]);
+
+            if (error) throw error;
+
             toast.success(`Request sent to ${businessName}!`, {
                 description: "They will contact you shortly with a personalized quote.",
             });
-        }, 1200);
+
+            // Reset form
+            setName("");
+            setEmail("");
+            setPhone("");
+            setEventDate("");
+            setGuests("");
+            setRequirements("");
+            setOpen(false);
+        } catch (error: any) {
+            toast.error("Failed to send request", {
+                description: error.message
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -52,7 +87,24 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
                             <input
                                 type="text"
                                 required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                                 placeholder="E.g., Rahul Sharma"
+                                className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Email Address</label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <input
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="E.g., rahul@example.com"
                                 className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             />
                         </div>
@@ -65,6 +117,8 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
                             <input
                                 type="tel"
                                 required
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 placeholder="+91"
                                 className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             />
@@ -79,6 +133,8 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
                                 <input
                                     type="date"
                                     required
+                                    value={eventDate}
+                                    onChange={(e) => setEventDate(e.target.value)}
                                     className="w-full pl-9 pr-2 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                 />
                             </div>
@@ -91,7 +147,9 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
                                 <input
                                     type="number"
                                     min="10"
-                                    step="10"
+                                    required
+                                    value={guests}
+                                    onChange={(e) => setGuests(e.target.value)}
                                     placeholder="E.g., 200"
                                     className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                 />
@@ -104,6 +162,8 @@ const GetQuoteModal = ({ businessName, triggerButton }: GetQuoteModalProps) => {
                         <div className="relative">
                             <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                             <textarea
+                                value={requirements}
+                                onChange={(e) => setRequirements(e.target.value)}
                                 placeholder="Any special requests or details about your event..."
                                 className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary min-h-[80px]"
                             />
