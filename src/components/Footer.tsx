@@ -64,13 +64,11 @@ const Footer = () => {
 
           <div>
             <h4 className="text-[10px] tracking-[3px] uppercase font-semibold text-white/80 mb-8 border-b border-white/10 pb-4 inline-block">Quick Links</h4>
-            <div className="space-y-4">
-              <Link to="/" className="block text-sm text-white/50 hover:text-primary transition-colors font-light">Home</Link>
-              <Link to="/venues" className="block text-sm text-white/50 hover:text-primary transition-colors font-light">All Venues</Link>
-              <Link to="/list-venue" className="block text-sm text-white/50 hover:text-primary transition-colors font-light">List Your Venue</Link>
-              <Link to="/blog" className="block text-sm text-white/50 hover:text-primary transition-colors font-light">Inspiration Blog</Link>
-              <Link to="/about" className="block text-sm text-white/50 hover:text-primary transition-colors font-light">About Us</Link>
-            </div>
+            <ul className="space-y-3">
+              <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors inline-block">About Us</Link></li>
+              <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors inline-block">Contact Support</Link></li>
+              <li><Link to="/list-venue" className="text-muted-foreground hover:text-primary transition-colors inline-block">List Your Venue</Link></li>
+            </ul>
           </div>
 
           <div>

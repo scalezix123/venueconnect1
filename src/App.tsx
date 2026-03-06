@@ -5,6 +5,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Venues from "./pages/Venues";
+import Vendors from "./pages/Vendors";
+import Cities from "./pages/Cities";
+import VenueDetails from "./pages/VenueDetails";
+import VendorDetails from "./pages/VendorDetails";
+import ListVenue from "./pages/ListVenue";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +26,16 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/venues" element={<Venues />} />
+          <Route path="/venues/:id" element={<VenueDetails />} />
+          <Route path="/vendors" element={<Vendors />} />
+          <Route path="/vendors/:id" element={<VendorDetails />} />
+          <Route path="/cities" element={<Cities />} />
+          <Route path="/list-venue" element={<ListVenue />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

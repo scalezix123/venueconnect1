@@ -1,8 +1,20 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const HeroSearch = () => {
+  const navigate = useNavigate();
+  const [eventType, setEventType] = useState("");
+  const [city, setCity] = useState("");
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (eventType) params.append("category", eventType);
+    if (city) params.append("city", city);
+    navigate(`/venues?${params.toString()}`);
+  };
   return (
     <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
       {/* Background Image */}
@@ -52,7 +64,7 @@ const HeroSearch = () => {
                 <label className="text-[9px] font-semibold tracking-[2px] uppercase text-white/40 mb-2 block">
                   Event Type
                 </label>
-                <Select>
+                <Select value={eventType} onValueChange={setEventType}>
                   <SelectTrigger className="bg-white/10 border-white/20 text-white h-12 hover:bg-white/15">
                     <SelectValue placeholder="Select event type" />
                   </SelectTrigger>
@@ -72,7 +84,7 @@ const HeroSearch = () => {
                 <label className="text-[9px] font-semibold tracking-[2px] uppercase text-white/40 mb-2 block">
                   City
                 </label>
-                <Select>
+                <Select value={city} onValueChange={setCity}>
                   <SelectTrigger className="bg-white/10 border-white/20 text-white h-12 hover:bg-white/15">
                     <SelectValue placeholder="Select city" />
                   </SelectTrigger>
@@ -88,7 +100,10 @@ const HeroSearch = () => {
               </div>
 
               <div className="flex items-end">
-                <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 text-[11px] font-semibold tracking-[2px] uppercase shadow-lg transition-all hover:scale-105 duration-300">
+                <Button
+                  onClick={handleSearch}
+                  className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 text-[11px] font-semibold tracking-[2px] uppercase shadow-lg transition-all hover:scale-105 duration-300"
+                >
                   <Search className="w-4 h-4 mr-2" />
                   Search
                 </Button>
@@ -100,21 +115,28 @@ const HeroSearch = () => {
               <p className="text-xs text-white/40 mb-2">Popular Searches:</p>
               <div className="flex flex-wrap gap-2">
                 {["Wedding Venues", "Banquet Halls", "Farmhouses", "Party Plots"].map((search) => (
-                  <a
+                  <button
                     key={search}
-                    href="#"
-                    className="text-xs text-white/60 hover:text-white transition-colors underline"
+                    onClick={() => {
+                      setEventType("wedding");
+                      setTimeout(handleSearch, 100);
+                    }}
+                    className="text-xs text-white/60 hover:text-white transition-colors underline bg-transparent border-none p-0 cursor-pointer"
                   >
                     {search}
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="bg-white/10 backdrop-blur-sm border border-white/45 text-white hover:bg-white/20 hover:border-white px-8 py-6 text-xs font-semibold tracking-wider uppercase">
+          <div className="flex gap-4 justify-center flex-wrap mt-8">
+            <Button
+              size="lg"
+              onClick={() => navigate('/list-venue')}
+              className="bg-white/10 backdrop-blur-sm border border-white/45 text-white hover:bg-white/20 hover:border-white px-8 py-6 text-xs font-semibold tracking-wider uppercase"
+            >
               List Your Venue
             </Button>
           </div>
